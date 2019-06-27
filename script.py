@@ -1,4 +1,8 @@
+
+from player import Player
+from room import Room
 import sys
+
 
 print("Welcome to the Adventure")
 acceptance = input("You are invited into the house, would you like to enter?  Yes to proceed, No to exit.")
@@ -11,6 +15,7 @@ print("The bathroom is on your left, the kitchen is straight ahead, and theres a
 inMain = False
 direction = input("Type 2 to go to the bathroom, 4 for the kitchen, or 6 for the workout room.  You can also leave by typing 'Goodbye'\n")
 err = "You can't access that room from here"
+
 
 
 def game():
