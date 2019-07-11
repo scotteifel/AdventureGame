@@ -18,11 +18,15 @@ while not answer in proceed:
 
 name = input("What's your name kind traveler? \n")
 print("\nExcellent, explore the house %s and see what it's like.\n" % (name,))
-err = "You can't access that room from here"
+err = "You can't access that git room from here"
 direction = ""
 player = Player(name)
 
-while direction not in leave_list:
+
+# WORKING ON TKINTER GUI.  No need to handle a wrong number entry if all are handled by buttons.
+
+testing it
+while True:
 
     last_location = ""
 
