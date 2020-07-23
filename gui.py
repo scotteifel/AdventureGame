@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
-from db import create_table, add_char, print_char, edit_char_attr
+from db import (create_db_table, add_char, print_char, edit_char_attr,
+get_current_room)
 
 prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
 
@@ -15,6 +16,9 @@ class Application(ttk.Frame):
         #Place the window in the center of the screen
         mon_w = self.master.winfo_screenwidth()
         mon_h = self.master.winfo_screenheight()
+        x = (mon_w / 2) - (150)
+        y = (mon_h / 2) - (150)
+        self.master.geometry("%dx%d+%d+%d" % (470,300,x,y))
 
         self.lab = ttk.Label(self.master, text=prompt1,
                           font=("Arial Bold", 10),justify=tk.CENTER)
@@ -36,19 +40,22 @@ class Application(ttk.Frame):
         name = self.ask_name.get()
         if len(name) == 0:
             return
+        self.master.geometry("490x330")
+        self.lab.grid(padx=50,pady=50)
         add_char(name)
         self.enter.destroy()
         self.ask_name.destroy()
         self.lab.configure(text="Welcome to the main room {char}. \n\
-It has a high ceiling and some plants.  The bathroom is on \
-your left, \nthe kitchen is straight ahead, and theres a workout \
-room to the right.".format(char=name))
+It has a high ceiling and some plants.  The bathroom is north, \nthe \
+kitchen is east.  There's a workout room to the south, and \nif you'd \
+like to leave, head back west and out the door.".format(char=name))
 
         #Draw house navigation
-        self.north = ttk.Button(self.master, text='North', command=self.entered)
-        self.south = ttk.Button(self.master, text='South', command=self.entered)
-        self.east = ttk.Button(self.master, text='East', command=self.entered)
-        self.west = ttk.Button(self.master, text='West', command=self.entered)
+        self.north = ttk.Button(self.master,text='North',command=self.go_north)
+        self.south = ttk.Button(self.master,text='South',command=self.go_north)
+        self.east = ttk.Button(self.master,text='East',command=self.go_north)
+        self.west = ttk.Button(self.master,text='West',
+                    command=self.master.destroy)
 
         self.north.grid(column=1,row=1)
         self.east.grid(column=2, row=2,sticky=tk.W)
@@ -57,35 +64,33 @@ room to the right.".format(char=name))
         self.quit.grid(column=1,row=4)
 
 
-    def entered(self):
-        name = self.ask_name.get()
-        print(name, "  IS NAME")
-        add_char(name)
-        print_char()
+    def go_north(self):
+
+        room = get_current_room()
+        edit_char_attr(tired = True, room = 1)
+
+        if room == 1:
+            self.north['state'] = 'disabled'
+            self.west['state'] = 'disabled'
+
+            self.lab.configure(text="You washed up in the restroom.  Wow what a\n\
+            nice smelling soap they have.  Now you can go \nto the living room \
+            to the east or head back to the \nmain room.")
 
 
- #
- #        self.lab.configure(text="You're now in the main room.  It\
- # has a high ceiling and some plants.\nThe bathroom is on your left, the kitchen\
- # is straight ahead, and theres a workout room to the right.\n")
- #
- #        # print("You're now in the main room.  It has a high ceiling\
- #        #        and some plants.\n")
- #        # print("The bathroom is on your left, the kitchen is straight\
- #        #        ahead, and theres a workout room to the right.\n")
- #        # print("To explore this house, use your keyboard to press the\
- #        #        number of a room your near to enter it.")
- #        # print("Bathroom(2), kitchen(4), or the workout room(6).  ")
- #        print("ok")
- #        # tested()
+    def go_east(self):
+        pass
+
+
+
+
 
 
 def main():
 
-    create_table()
+    create_db_table()
     root = ThemedTk(theme='arc')
     root.title('AdventureGame')
-    # root.geometry('500')
     app = Application(master=root)
     app.mainloop()
 
