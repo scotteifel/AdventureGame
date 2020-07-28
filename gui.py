@@ -67,7 +67,7 @@ like to leave, head back west and out the door.".format(char=name))
     def go_north(self):
 
         room = get_current_room()
-        edit_char_attr(tired = True, room = 1)
+        edit_char_attr({"tired":True, "room":1})
 
         if room == 1:
             self.north['state'] = 'disabled'
@@ -79,12 +79,42 @@ like to leave, head back west and out the door.".format(char=name))
 
 
     def go_east(self):
-        pass
+
+        room = get_current_room()
+
+        if room == 1:
+            edit_char_attr(room = 2)
+
+            self.west['state'] = 'normal'
+            self.east['state'] = 'disabled'
+
+            self.lab.configure(text="Welcome to the workout room. \n\
+Would you like to lift some weights?")
 
 
+    def go_south(self):
+
+        room = get_current_room()
+
+        if room == 2:
+            edit_char_attr(tired = True, room = 3)
+            self.north['state'] = 'normal'
+
+            self.lab.configure(text="Whoa you've entered the kitchen, and \
+wow they have chosen a nice backsplash.  Do you want some water?  You're a \
+kind of thirsty.")
 
 
+    def go_west(self):
 
+        room = get_current_room()
+
+        if room == 2:
+            edit_char_attr(tired = True, room = 1)
+            self.west['state'] = 'disabled'
+
+            self.lab.configure(text="You're back in the bathroom, you're tired\
+.  Do you want to take a refreshing drink?  There's a cup right on the counter")
 
 def main():
 
