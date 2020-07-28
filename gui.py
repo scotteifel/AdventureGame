@@ -4,6 +4,14 @@ from ttkthemes import ThemedTk
 from db import (create_db_table, add_char, print_char, edit_char_attr,
 get_current_room)
 
+
+# This is how the rooms are numbered in the game layout
+#        -------
+# ____  | 1 | 2 |
+# Entr. | 0 | 3 |
+# ____  | 5 | 4 |
+#        -------
+
 prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
 
 class Application(ttk.Frame):
@@ -52,10 +60,10 @@ like to leave, head back west and out the door.".format(char=name))
 
         #Draw house navigation
         self.north = ttk.Button(self.master,text='North',command=self.go_north)
-        self.south = ttk.Button(self.master,text='South',command=self.go_north)
-        self.east = ttk.Button(self.master,text='East',command=self.go_north)
+        self.south = ttk.Button(self.master,text='South',command=self.go_south)
+        self.east = ttk.Button(self.master,text='East',command=self.go_east)
         self.west = ttk.Button(self.master,text='West',
-                    command=self.master.destroy)
+                    command=self.go_west)
 
         self.north.grid(column=1,row=1)
         self.east.grid(column=2, row=2,sticky=tk.W)
@@ -67,9 +75,13 @@ like to leave, head back west and out the door.".format(char=name))
     def go_north(self):
 
         room = get_current_room()
-        edit_char_attr(tired = True, room = 1)
-
-        if room == 1:
+        kw = {'tired':"True", "room":"1"}
+        edit_char_attr(**kw)
+        print(type(room),room,"   That is room")
+        if room == 0:
+            print("ROOM IS 0")
+            char_inf = {'room':1}
+            edit_char_attr(**char_inf)
             self.north['state'] = 'disabled'
             self.west['state'] = 'disabled'
 
@@ -77,10 +89,89 @@ like to leave, head back west and out the door.".format(char=name))
             nice smelling soap they have.  Now you can go \nto the living room \
             to the east or head back to the \nmain room.")
 
+        elif room == 3:
+            char_inf = {'room':'2'}
+            edit_char_attr(**char_inf)
+
+            self.north['state'] = 'disabled'
+            self.east['state'] = 'disabled'
+
+        elif room == 5:
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+            self.west['state'] = 'normal'
+            self.south['state'] = 'normal'
+
+        elif room == 4:
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'normal'
+
 
     def go_east(self):
-        pass
+        room = get_current_room()
 
+        if room == 1:
+            char_inf = {'room':2}
+            edit_char_attr(**char_inf)
+
+        elif room == 0:
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+        elif room == 5:
+            char_inf = {'room':4}
+            edit_char_attr(**char_inf)
+
+        self.east['state'] = 'disabled'
+
+
+    def go_south(self):
+        room = get_current_room()
+
+        if room == 1:
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+        elif room == 2:
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+        elif room == 0:
+            char_inf = {'room':5}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'disabled'
+
+        elif room == 3:
+            char_inf = {'room':4}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'disabled'
+
+
+
+    def go_west(self):
+        room = get_current_room()
+
+        if room == 0:
+            self.master.destroy()
+
+        elif room == 2:
+            char_inf = {'room':1}
+            edit_char_attr(**char_inf)
+
+        elif room == 3:
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+        elif room == 4:
+            char_inf = {'room':5}
+            edit_char_attr(**char_inf)
+
+        self.east['state'] = 'disabled'
 
 
 
