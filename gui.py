@@ -4,6 +4,20 @@ from ttkthemes import ThemedTk
 from db import (create_db_table, add_char, print_char, edit_char_attr,
 get_current_room)
 
+
+# This is how the rooms are numbered in the game layout
+# 0 is the entrance room
+# 1 is the bathroom
+# 2 is the workout room
+# 3 is the kitchen
+# 4 is the living room
+# 5 is the dining room
+#        -------
+# ____  | 1 | 2 |
+# Entr. | 0 | 3 |
+# ____  | 5 | 4 |
+#        -------
+
 prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
 
 class Application(ttk.Frame):
@@ -18,10 +32,10 @@ class Application(ttk.Frame):
         mon_h = self.master.winfo_screenheight()
         x = (mon_w / 2) - (150)
         y = (mon_h / 2) - (150)
-        self.master.geometry("%dx%d+%d+%d" % (470,300,x,y))
+        self.master.geometry("%dx%d+%d+%d" % (540,300,x,y))
 
         self.lab = ttk.Label(self.master, text=prompt1,
-                          font=("Arial Bold", 10),justify=tk.CENTER)
+             font=("Arial Bold", 10),justify=tk.CENTER,width=55)
 
         self.ask_name = ttk.Entry(self.master)
 
@@ -48,14 +62,16 @@ class Application(ttk.Frame):
         self.lab.configure(text="Welcome to the main room {char}. \n\
 It has a high ceiling and some plants.  The bathroom is north, \nthe \
 kitchen is east.  There's a workout room to the south, and \nif you'd \
-like to leave, head back west and out the door.".format(char=name))
+like to leave, head back west and out the door.".format(char=name),width=65)
 
         #Draw house navigation
-        self.north = ttk.Button(self.master,text='North',command=self.go_north)
-        self.south = ttk.Button(self.master,text='South',command=self.go_north)
-        self.east = ttk.Button(self.master,text='East',command=self.go_north)
+        self.north = ttk.Button(self.master,text='North',
+                                    command=self.go_north)
+        self.south = ttk.Button(self.master,text='South',
+                                    command=self.go_south)
+        self.east = ttk.Button(self.master,text='East',command=self.go_east)
         self.west = ttk.Button(self.master,text='West',
-                    command=self.master.destroy)
+                    command=self.go_west)
 
         self.north.grid(column=1,row=1)
         self.east.grid(column=2, row=2,sticky=tk.W)
@@ -67,54 +83,155 @@ like to leave, head back west and out the door.".format(char=name))
     def go_north(self):
 
         room = get_current_room()
-        edit_char_attr({"tired":True, "room":1})
 
-        if room == 1:
+        if room == 0:
+            self.room_prompt(1)
+
+            kw = {"tired":True, "room":"1"}
+            edit_char_attr(**kw)
+
             self.north['state'] = 'disabled'
             self.west['state'] = 'disabled'
 
-            self.lab.configure(text="You washed up in the restroom.  Wow what a\n\
-            nice smelling soap they have.  Now you can go \nto the living room \
-            to the east or head back to the \nmain room.")
+        elif room == 3:
+            self.room_prompt(2)
+
+            char_inf = {'room':'2'}
+            edit_char_attr(**char_inf)
+
+            self.north['state'] = 'disabled'
+            self.east['state'] = 'disabled'
+
+        elif room == 5:
+            self.room_prompt(0)
+
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+            self.west['state'] = 'normal'
+
+        elif room == 4:
+            self.room_prompt(3)
+
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+        self.south['state'] = 'normal'
 
 
     def go_east(self):
-
         room = get_current_room()
 
         if room == 1:
-            edit_char_attr(room = 2)
+            self.room_prompt(2)
 
-            self.west['state'] = 'normal'
-            self.east['state'] = 'disabled'
+            char_inf = {'room':2}
+            edit_char_attr(**char_inf)
 
-            self.lab.configure(text="Welcome to the workout room. \n\
-Would you like to lift some weights?")
+        elif room == 0:
+            self.room_prompt(3)
+
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+        elif room == 5:
+            self.room_prompt(4)
+
+            char_inf = {'room':4}
+            edit_char_attr(**char_inf)
+
+        self.east['state'] = 'disabled'
+        self.west['state'] = 'normal'
 
 
     def go_south(self):
-
         room = get_current_room()
 
-        if room == 2:
-            edit_char_attr(tired = True, room = 3)
-            self.north['state'] = 'normal'
+        if room == 1:
+            self.room_prompt(0)
 
-            self.lab.configure(text="Whoa you've entered the kitchen, and \
-wow they have chosen a nice backsplash.  Do you want some water?  You're a \
-kind of thirsty.")
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+
+        elif room == 2:
+            self.room_prompt(3)
+
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+
+        elif room == 0:
+            self.room_prompt(5)
+
+            char_inf = {'room':5}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'disabled'
+
+        elif room == 3:
+            self.room_prompt(4)
+
+            char_inf = {'room':4}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'disabled'
+        self.north['state'] = 'normal'
+
 
 
     def go_west(self):
-
         room = get_current_room()
 
-        if room == 2:
-            edit_char_attr(tired = True, room = 1)
+        if room == 0:
+            self.master.destroy()
+
+        elif room == 2:
+            self.room_prompt(1)
+
+            char_inf = {'room':1}
+            edit_char_attr(**char_inf)
             self.west['state'] = 'disabled'
 
-            self.lab.configure(text="You're back in the bathroom, you're tired\
-.  Do you want to take a refreshing drink?  There's a cup right on the counter")
+        elif room == 3:
+            self.room_prompt(0)
+
+
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+        elif room == 4:
+            self.room_prompt(5)
+
+            char_inf = {'room':5}
+            edit_char_attr(**char_inf)
+            self.west['state'] = 'disabled'
+
+        self.east['state'] = 'normal'
+
+
+    def room_prompt(self,_room):
+
+        if _room == 0:
+            self.lab.configure(text="You're in the entrance hall")
+
+        elif _room == 1:
+            self.lab.configure(text="You washed up in the restroom.  Wow \
+what a\n nice smelling soap they have.  Now you can go \nto the living room \
+to the east or head back to the \nmain room.",justify=tk.CENTER)
+
+        elif _room == 2:
+            self.lab.configure(text="You're in the workout room")
+
+        elif _room == 3:
+            self.lab.configure(text="You're in the kitchen.  Wow a chicken!")
+
+        elif _room == 4:
+            self.lab.configure(text="You're in the diningroom")
+
+        elif _room == 5:
+            self.lab.configure(text="You're in the livingroom")
+
 
 def main():
 
