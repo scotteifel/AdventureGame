@@ -6,12 +6,15 @@ get_current_room)
 
 
 # This is how the rooms are numbered in the game layout
+<<<<<<< HEAD
 # 0 is the entrance room
 # 1 is the bathroom
 # 2 is the workout room
 # 3 is the kitchen
 # 4 is the living room
 # 5 is the dining room
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
 #        -------
 # ____  | 1 | 2 |
 # Entr. | 0 | 3 |
@@ -65,10 +68,15 @@ kitchen is east.  There's a workout room to the south, and \nif you'd \
 like to leave, head back west and out the door.".format(char=name),width=65)
 
         #Draw house navigation
+<<<<<<< HEAD
         self.north = ttk.Button(self.master,text='North',
                                     command=self.go_north)
         self.south = ttk.Button(self.master,text='South',
                                     command=self.go_south)
+=======
+        self.north = ttk.Button(self.master,text='North',command=self.go_north)
+        self.south = ttk.Button(self.master,text='South',command=self.go_south)
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
         self.east = ttk.Button(self.master,text='East',command=self.go_east)
         self.west = ttk.Button(self.master,text='West',
                     command=self.go_west)
@@ -83,6 +91,7 @@ like to leave, head back west and out the door.".format(char=name),width=65)
     def go_north(self):
 
         room = get_current_room()
+<<<<<<< HEAD
 
         if room == 0:
             self.room_prompt(1)
@@ -90,6 +99,15 @@ like to leave, head back west and out the door.".format(char=name),width=65)
             kw = {"tired":True, "room":"1"}
             edit_char_attr(**kw)
 
+=======
+        kw = {'tired':"True", "room":"1"}
+        edit_char_attr(**kw)
+        print(type(room),room,"   That is room")
+        if room == 0:
+            print("ROOM IS 0")
+            char_inf = {'room':1}
+            edit_char_attr(**char_inf)
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             self.north['state'] = 'disabled'
             self.west['state'] = 'disabled'
 
@@ -118,36 +136,69 @@ like to leave, head back west and out the door.".format(char=name),width=65)
 
         self.south['state'] = 'normal'
 
+        elif room == 3:
+            char_inf = {'room':'2'}
+            edit_char_attr(**char_inf)
+
+            self.north['state'] = 'disabled'
+            self.east['state'] = 'disabled'
+
+        elif room == 5:
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+            self.west['state'] = 'normal'
+            self.south['state'] = 'normal'
+
+        elif room == 4:
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+            self.south['state'] = 'normal'
+
 
     def go_east(self):
         room = get_current_room()
 
         if room == 1:
+<<<<<<< HEAD
             self.room_prompt(2)
 
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':2}
             edit_char_attr(**char_inf)
 
         elif room == 0:
+<<<<<<< HEAD
             self.room_prompt(3)
 
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':3}
             edit_char_attr(**char_inf)
 
         elif room == 5:
+<<<<<<< HEAD
             self.room_prompt(4)
 
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':4}
             edit_char_attr(**char_inf)
 
         self.east['state'] = 'disabled'
+<<<<<<< HEAD
         self.west['state'] = 'normal'
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
 
 
     def go_south(self):
         room = get_current_room()
 
         if room == 1:
+<<<<<<< HEAD
             self.room_prompt(0)
 
             char_inf = {'room':0}
@@ -164,19 +215,35 @@ like to leave, head back west and out the door.".format(char=name),width=65)
         elif room == 0:
             self.room_prompt(5)
 
+=======
+            char_inf = {'room':0}
+            edit_char_attr(**char_inf)
+
+        elif room == 2:
+            char_inf = {'room':3}
+            edit_char_attr(**char_inf)
+
+        elif room == 0:
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':5}
             edit_char_attr(**char_inf)
 
             self.south['state'] = 'disabled'
 
         elif room == 3:
+<<<<<<< HEAD
             self.room_prompt(4)
 
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':4}
             edit_char_attr(**char_inf)
 
             self.south['state'] = 'disabled'
+<<<<<<< HEAD
         self.north['state'] = 'normal'
+=======
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
 
 
 
@@ -187,6 +254,7 @@ like to leave, head back west and out the door.".format(char=name),width=65)
             self.master.destroy()
 
         elif room == 2:
+<<<<<<< HEAD
             self.room_prompt(1)
 
             char_inf = {'room':1}
@@ -197,10 +265,17 @@ like to leave, head back west and out the door.".format(char=name),width=65)
             self.room_prompt(0)
 
 
+=======
+            char_inf = {'room':1}
+            edit_char_attr(**char_inf)
+
+        elif room == 3:
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
             char_inf = {'room':0}
             edit_char_attr(**char_inf)
 
         elif room == 4:
+<<<<<<< HEAD
             self.room_prompt(5)
 
             char_inf = {'room':5}
@@ -222,6 +297,12 @@ to the east or head back to the \nmain room.",justify=tk.CENTER)
 
         elif _room == 2:
             self.lab.configure(text="You're in the workout room")
+=======
+            char_inf = {'room':5}
+            edit_char_attr(**char_inf)
+
+        self.east['state'] = 'disabled'
+>>>>>>> 00de1221adac94b978e294ef7c8db8bc11bc3a12
 
         elif _room == 3:
             self.lab.configure(text="You're in the kitchen.  Wow a chicken!")
