@@ -34,16 +34,17 @@ class Application(ttk.Frame):
         y = (mon_h / 2) - (150)
         self.master.geometry("%dx%d+%d+%d" % (442,300,x,y))
 
-        self.lab = ttk.Label(self.master, text=prompt1,
+        self.lab = tk.Label(self.master, text=prompt1,
 font=("Andy", 11),justify=tk.CENTER,width=45,anchor=tk.N,
 wraplength=300)
 
-
-
         self.ask_name = ttk.Entry(self.master)
         self.ask_name.focus()
+
         self.enter = ttk.Button(self.master, text="Enter",
                             command=self.set_name)
+        self.master.bind("<Return>", self.set_name)
+
         self.quit = ttk.Button(self.master, text="Quit",
                             command=self.master.destroy)
 
@@ -55,7 +56,7 @@ wraplength=300)
 
 
     #Store the players name
-    def set_name(self):
+    def set_name(self,event):
         name = self.ask_name.get().lower()
 
         #Check if the player is already in the database
@@ -74,7 +75,7 @@ wraplength=300)
 It has a high ceiling and some plants.  The bathroom is North and the \
 kitchen is to the East.  There's a workout room somewhere in here, and if \
 you'd like to leave, head back West and out the door.  Why not explore?"
-.format(char=name.title()),width=65,wraplength=400)
+.format(char=name.title()),width=65,wraplength=400,height=6)
 
         #Draw house navigation
         self.north = ttk.Button(self.master,text='North',
@@ -282,7 +283,7 @@ something to help with that")
 wow, look at you go.  Whoa, did you stretch?  Alright, alright!  You are \
 really doing a great job.  That definately tired you out.  You could use \
 something to drink, and maybe a snack, too.  if you want to workout some \
-more.  The kitchen might be a good place make your way to.")
+more.  The kitchen might be a good place to make your way to.")
 
             kw = {'thirsty': 0,'hungry':0,'tired':0,'strength':1}
             edit_char_attr(**kw)
