@@ -16,6 +16,25 @@ def create_db_table():
         cur.close()
         conn.close()
 
+#See if character has already played
+def check_char(submission):
+        global CRNT_PLYR
+
+        conn = sqlite3.connect("main.db")
+        cur = conn.cursor()
+        cur.execute('''SELECT name FROM character WHERE name = (?)''',
+                        (submission,))
+        if cur.fetchone():
+                CRNT_PLYR = submission
+
+                cur.execute('''UPDATE character SET room_tracker = 0 WHERE
+                        name = (?)''',(submission,))
+                conn.commit()
+                cur.close()
+                conn.close()
+                return True
+        else:
+            return
 
 def add_char(name):
         global CRNT_PLYR
@@ -48,7 +67,7 @@ def edit_char_attr(**kwargs):
         if 'room' in kwargs:
 
             cur.execute('''UPDATE character SET room_tracker = {x} WHERE
-                            name = (?)'''.format(x=kwargs['room']), (CRNT_PLYR,))
+                    name = (?)'''.format(x=kwargs['room']), (CRNT_PLYR,))
             conn.commit()
 
         if 'thirsty' in kwargs:
@@ -83,7 +102,7 @@ def edit_char_attr(**kwargs):
             conn.commit()
 
         if 'strength' in kwargs:
-            #Put thirst, hunger, and tired to 0
+            #Set thirst, hunger, and tired to 0
             cur.execute('''UPDATE character SET thirsty = 0, hungry = 0,
                 tired = 0 WHERE name = (?)''', (CRNT_PLYR,))
             conn.commit()
@@ -96,6 +115,7 @@ def edit_char_attr(**kwargs):
             print("New strength is ", new_strength)
             cur.execute('''UPDATE character SET strength = (?) WHERE
                 name = (?)''',(new_strength, CRNT_PLYR))
+
 
             conn.commit()
         cur.close()
