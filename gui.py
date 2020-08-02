@@ -6,16 +6,16 @@ get_current_room, get_char_attr, check_char)
 
 
 # This is how the rooms are numbered in the game layout
-# 0 is the entrance room
-# 1 is the bathroom
-# 2 is the workout room
-# 3 is the kitchen
-# 4 is the dining room
-# 5 is the living room
+# 0 : entrance room
+# 1 : bathroom
+# 2 : workout room
+# 3 : kitchen
+# 4 : dining room
+# 5 : living room
 #        -------
-# ____  | 1 | 2 |
-# Entr. | 0 | 3 |
-# ____  | 5 | 4 |
+# _______    | 1 | 2 |
+# Out front. | 0 | 3 |
+# _______   | 5 | 4 |
 #        -------
 
 prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
@@ -32,23 +32,25 @@ class Application(ttk.Frame):
         mon_h = self.master.winfo_screenheight()
         x = (mon_w / 2) - (150)
         y = (mon_h / 2) - (150)
-        self.master.geometry("%dx%d+%d+%d" % (442,300,x,y))
-
+        self.master.geometry("%dx%d+%d+%d" % (400,300,x,y))
+        self.master.configure(bg="#21e400")
+        #tk is used for the extra availability of attributes
         self.lab = tk.Label(self.master, text=prompt1,
-font=("Andy", 11),justify=tk.CENTER,width=45,anchor=tk.N,
-wraplength=300)
+font=("Bodoni MT", 15),justify=tk.CENTER,width=25,anchor=tk.N,
+wraplength=300,bg="darkblue",fg='#ffb732')
 
         self.ask_name = ttk.Entry(self.master)
         self.ask_name.focus()
 
         self.enter = ttk.Button(self.master, text="Enter",
                             command=self.set_name)
+        self.enter.bind(sequence="<ButtonRelease>", func=self.set_name)
         self.master.bind("<Return>", self.set_name)
 
         self.quit = ttk.Button(self.master, text="Quit",
                             command=self.master.destroy)
 
-        self.lab.grid(columnspan=3,column=0, row=0,padx=40,pady=40)
+        self.lab.grid(columnspan=3,column=0, row=0,padx=45,pady=40)
         self.ask_name.grid(column=1,row=1)
         self.enter.grid(column=1, row=2)
         self.quit.grid(column=1, row=3,pady=15)
@@ -62,20 +64,35 @@ wraplength=300)
         #Check if the player is already in the database
         if len(name) == 0:
             return
-        if check_char(name):
+        #Welcome back prompt
+        elif check_char(name):
+            self.lab.configure(text="Hello again {char}, it's nice to \
+have you back.  You're now 7in the entrance hall, the ceiling is \
+still high and there are various plants about the room.  The bathroom is \
+North and the kitchen is to the East.  Head South to find the living room.  \
+When you'd like to leave, head back West and out the door.  Why \
+not explore some more?".format(char=name.title()),width=40,wraplength=400,
+height=6)
             pass
+        #First welcome prompt
         else:
             add_char(name)
-
-        self.master.geometry("630x450")
-        self.lab.grid(padx=50,pady=50)
-        self.enter.destroy()
-        self.ask_name.destroy()
-        self.lab.configure(text="Welcome to the main room {char}. \
+            self.lab.configure(text="Welcome to the main room {char}. \
 It has a high ceiling and some plants.  The bathroom is North and the \
 kitchen is to the East.  There's a workout room somewhere in here, and if \
 you'd like to leave, head back West and out the door.  Why not explore?"
-.format(char=name.title()),width=65,wraplength=400,height=6)
+.format(char=name.title()),width=40,wraplength=400,height=6)
+
+        self.master.geometry("570x450")
+        self.lab.grid(padx=40,pady=50)
+        self.enter.destroy()
+        self.ask_name.destroy()
+        self.quit.destroy()
+#         self.lab.configure(text="Welcome to the main room {char}. \
+# It has a high ceiling and some plants.  The bathroom is North and the \
+# kitchen is to the East.  There's a workout room somewhere in here, and if \
+# you'd like to leave, head back West and out the door.  Why not explore?"
+# .format(char=name.title()),width=65,wraplength=400,height=6)
 
         #Draw house navigation
         self.north = ttk.Button(self.master,text='North',
@@ -90,11 +107,10 @@ you'd like to leave, head back West and out the door.  Why not explore?"
         self.east.grid(column=2, row=2,sticky=tk.W)
         self.west.grid(column=0,row=2,sticky=tk.E)
         self.south.grid(column=1, row=3)
-        self.quit.grid(column=2,row=7)
 
 
+################Processing room navigation
     def go_north(self):
-
         room = get_current_room()
 
         if room == 0:
@@ -102,7 +118,6 @@ you'd like to leave, head back West and out the door.  Why not explore?"
 
             kw = {"tired":True, "room":"1"}
             edit_char_attr(**kw)
-
             self.north['state'] = 'disabled'
             self.west['state'] = 'disabled'
 
@@ -111,7 +126,6 @@ you'd like to leave, head back West and out the door.  Why not explore?"
 
             char_inf = {'room':'2'}
             edit_char_attr(**char_inf)
-
             self.north['state'] = 'disabled'
             self.east['state'] = 'disabled'
 
@@ -120,7 +134,6 @@ you'd like to leave, head back West and out the door.  Why not explore?"
 
             char_inf = {'room':0}
             edit_char_attr(**char_inf)
-
             self.west['state'] = 'normal'
 
         elif room == 4:
@@ -142,7 +155,6 @@ you'd like to leave, head back West and out the door.  Why not explore?"
             edit_char_attr(**char_inf)
 
         elif room == 0:
-            print("Room is 0")
             self.room_prompt(3)
 
             char_inf = {'room':3}
@@ -166,6 +178,7 @@ you'd like to leave, head back West and out the door.  Why not explore?"
 
             char_inf = {'room':0}
             edit_char_attr(**char_inf)
+            self.west['state'] = 'normal'
 
 
         elif room == 2:
@@ -180,8 +193,8 @@ you'd like to leave, head back West and out the door.  Why not explore?"
 
             char_inf = {'room':5}
             edit_char_attr(**char_inf)
-
             self.south['state'] = 'disabled'
+            self.west['state'] = 'disabled'
 
         elif room == 3:
             self.room_prompt(4)
@@ -220,6 +233,7 @@ you'd like to leave, head back West and out the door.  Why not explore?"
             self.west['state'] = 'disabled'
 
         self.east['state'] = 'normal'
+########End of processing room navigation
 
 
     def room_prompt(self,_room):
@@ -282,7 +296,7 @@ something to help with that")
                 self.lab.configure(text="You're in the exercise room now and \
 wow, look at you go.  Whoa, did you stretch?  Alright, alright!  You are \
 really doing a great job.  That definately tired you out.  You could use \
-something to drink, and maybe a snack, too.  if you want to workout some \
+something to drink, and maybe a snack, too, if you want to workout some \
 more.  The kitchen might be a good place to make your way to.")
 
             kw = {'thirsty': 0,'hungry':0,'tired':0,'strength':1}
@@ -340,8 +354,8 @@ you can have a piece.")
             if stats[3] == 0:
 
                 self.lab.configure(text="You're in the livingroom.  It's \
-really nice with great furniture and tall drapes and the sunshine is really \
-streaming in through that window.  Ohh what a nice recliner there is in \
+really nice with great furniture and tall drapes.  Wow the sunshine is really \
+streaming in through that window, too.  Ohh what a nice recliner there is in \
 the corner!  You sit down, play a little Sudoku, and rest for a bit.  \
 Whoa, where did the time go??  You dozed off for a minute!  A bite \
 to eat seems to be in order now.  Where's that diningroom?")
