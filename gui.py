@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
+import tkinter.font as tkfont
+import math
+
 from db import (create_db_table, add_char, print_char, edit_char_attr,
 get_current_room, get_char_attr, check_char)
 
@@ -18,6 +21,7 @@ get_current_room, get_char_attr, check_char)
 # _______   | 5 | 4 |
 #        -------
 
+
 prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
 
 class Application(ttk.Frame):
@@ -26,18 +30,18 @@ class Application(ttk.Frame):
 
         super().__init__(master)
         self.master = master
-
-        #Place the window in the center of the screen
+        ###     Place the window in the center of the screen     ###
         mon_w = self.master.winfo_screenwidth()
         mon_h = self.master.winfo_screenheight()
         x = (mon_w / 2) - (150)
         y = (mon_h / 2) - (150)
-        self.master.geometry("%dx%d+%d+%d" % (400,300,x,y))
+        self.master.geometry("%dx%d+%d+%d" % (465,330,x,y))
+
         self.master.configure(bg="#21e400")
-        #tk is used for the extra availability of attributes
+        #tk and not ttk is used for the availability of extra attributes
         self.lab = tk.Label(self.master, text=prompt1,
-font=("Bodoni MT", 15),justify=tk.CENTER,width=25,anchor=tk.N,
-wraplength=300,bg="darkblue",fg='#ffb732')
+font=("Bodoni MT", 16),justify=tk.CENTER,width=25,
+wraplength=300,bg="darkblue",fg='#ffb732',padx=35,pady=20)
 
         self.ask_name = ttk.Entry(self.master)
         self.ask_name.focus()
@@ -52,9 +56,10 @@ wraplength=300,bg="darkblue",fg='#ffb732')
 
         self.lab.grid(columnspan=3,column=0, row=0,padx=45,pady=40)
         self.ask_name.grid(column=1,row=1)
-        self.enter.grid(column=1, row=2)
+        self.enter.grid(column=1, row=2,pady=15)
         self.quit.grid(column=1, row=3,pady=15)
         print_char()
+
 
 
     #Store the players name
@@ -67,12 +72,12 @@ wraplength=300,bg="darkblue",fg='#ffb732')
         #Welcome back prompt
         elif check_char(name):
             self.lab.configure(text="Hello again {char}, it's nice to \
-have you back.  You're now 7in the entrance hall, the ceiling is \
+have you back.  You're now in the entrance hall, the ceiling is \
 still high and there are various plants about the room.  The bathroom is \
 North and the kitchen is to the East.  Head South to find the living room.  \
 When you'd like to leave, head back West and out the door.  Why \
-not explore some more?".format(char=name.title()),width=40,wraplength=400,
-height=6)
+not explore some more?".format(char=name.title()),width=35,wraplength=400,
+height=9,padx=35,pady=20)
             pass
         #First welcome prompt
         else:
@@ -81,18 +86,14 @@ height=6)
 It has a high ceiling and some plants.  The bathroom is North and the \
 kitchen is to the East.  There's a workout room somewhere in here, and if \
 you'd like to leave, head back West and out the door.  Why not explore?"
-.format(char=name.title()),width=40,wraplength=400,height=6)
+.format(char=name.title()),width=35,wraplength=400,
+height=9,padx=20,pady=20)
 
-        self.master.geometry("570x450")
-        self.lab.grid(padx=40,pady=50)
+        self.master.geometry("605x540")
+        self.lab.grid(padx=67,pady=40)
         self.enter.destroy()
         self.ask_name.destroy()
         self.quit.destroy()
-#         self.lab.configure(text="Welcome to the main room {char}. \
-# It has a high ceiling and some plants.  The bathroom is North and the \
-# kitchen is to the East.  There's a workout room somewhere in here, and if \
-# you'd like to leave, head back West and out the door.  Why not explore?"
-# .format(char=name.title()),width=65,wraplength=400,height=6)
 
         #Draw house navigation
         self.north = ttk.Button(self.master,text='North',
@@ -100,7 +101,7 @@ you'd like to leave, head back West and out the door.  Why not explore?"
         self.south = ttk.Button(self.master,text='South',
                                     command=self.go_south)
         self.east = ttk.Button(self.master,text='East',command=self.go_east)
-        self.west = ttk.Button(self.master,text='West',
+        self.west = ttk.Button(self.master,text='EXIT',
                     command=self.go_west)
 
         self.north.grid(column=1,row=1)
@@ -109,7 +110,7 @@ you'd like to leave, head back West and out the door.  Why not explore?"
         self.south.grid(column=1, row=3)
 
 
-################Processing room navigation
+################Processing room navigation##################
     def go_north(self):
         room = get_current_room()
 
@@ -246,11 +247,11 @@ you'd like to leave, head back West and out the door.  Why not explore?"
         # 4 = strength level
         # 5 = current room
 
+
 ########################     ENTRANCE     ##################################
         if _room == 0:
-            print("ENTRANCE ROOM")
-            self.lab.configure(text="You're back in the entrance hall.  Head \
-west to go out the door.")
+            self.lab.configure(text="You're back in the entrance hall.  \
+Head west to go out the door.")
 
 ########################     RESTROOM     ##################################
         elif _room == 1:
@@ -262,17 +263,15 @@ west to go out the door.")
 You took a sip from a dixie cup and are refreshed.", justify=tk.CENTER)
 
             else:
-                self.lab.configure(text="You washed up in the restroom.  Wow \
-what a nice smelling soap they have.  Now you can go to the living room \
-to the east or head back to the main room.",justify=tk.CENTER)
+                self.lab.configure(text="You washed up in the restroom.  \
+Wow what a nice smelling soap they have.  Now you can go to the living \
+room to the east or head back to the main room.",justify=tk.CENTER)
 
 ########################     WORKOUT ROOM     #############################
         elif _room == 2:
-            print("ROOM 2 WORKOUT ROOM")
 
             #Check if the player is tired
             if stats[3] == 0:
-                print("The player's tired")
 
                 self.lab.configure(text="You're too tired to lift and run, \
 after you rest you should be good to go though.  If you can find a nice \
@@ -292,23 +291,46 @@ you're parched and there's no watertank in here.  You need a refreshment \
 before you get going with any workouts.  Search some other rooms for \
 something to help with that")
 
+            ##Hidden suprise accessed at strength 5  Hammock is accessed
+            #Strength 5 is reached
+            if stats[4] >= 4:
+                self.lab.configure(text="Strength 5 achieved.  You head \
+to the door and tug on it, it opens up.  Wow you're outside and there's a \
+hammock swaying there between some fronds.  You go and lay down and close \
+you're eyes.  Congratulations, you've gained great comfort!  \
+                Game's Over.")
+                self.north.destroy()
+                self.west.destroy()
+                self.east.destroy()
+                self.south['text'] = "Exit"
+                self.south.configure(command=self.master.destroy)
+                self.south.grid(pady=35)
+
+            elif stats[4] >= 2:
+                self.lab.configure(text="You're back in the exercise \
+room and you're at it again!  Whoa, you are really getting stronger, \
+if you keep this up you might be able to open that jammed door leading \
+to the backyard.  Welp, you'll need more rest and nutrition if you plan \
+on opening that door up.")
+
+                kw = {'thirsty': 0,'hungry':0,'tired':0,'strength':1}
+                edit_char_attr(**kw)
+
             else:
-                self.lab.configure(text="You're in the exercise room now and \
-wow, look at you go.  Whoa, did you stretch?  Alright, alright!  You are \
-really doing a great job.  That definately tired you out.  You could use \
-something to drink, and maybe a snack, too, if you want to workout some \
-more.  The kitchen might be a good place to make your way to.")
+                self.lab.configure(text="You're in the exercise room now \
+and wow, look at you go.  Whoa, did you stretch?  Alright, alright!  You \
+are really doing a great job.  That definately tired you out.  You could \
+use something to drink, and maybe a snack, too, if you want to workout \
+some more.  The kitchen might be a good place to make your way to.")
+                kw = {'thirsty': 0,'hungry':0,'tired':0,'strength':1}
+                edit_char_attr(**kw)
 
-            kw = {'thirsty': 0,'hungry':0,'tired':0,'strength':1}
-            edit_char_attr(**kw)
 
-########################    KITCHEN     #####################################
+########################    KITCHEN     ###################################
         elif _room == 3:
-            print("IN ROOM 3, KITCHEN")
 
             #Check thirst
             if stats[1] == 0:
-                print("Yes I am thirsty.")
 
                 self.lab.configure(text="You're in the kitchen.  This is a \
 nice area with marble countertops and recently updated cabinets.  You \
@@ -318,18 +340,14 @@ drink a glass of nice cold water and are refreshed.")
                 edit_char_attr(**kw)
 
             else:
-                print("No I'm not thirsty.")
-
                 self.lab.configure(text="You're in the kitchen.  This is a \
 nice area with marble countertops and recently updated cabinets.  You're \
 satisfied so there's no need for a drink of water for ya now.")
 
 ########################    DININGROOM     ################################
         elif _room == 4:
-            print("DINING ROOM")
             #Check hunger
             if stats[2] == 0:
-                print("Yes I'm hungry")
 
                 self.lab.configure(text="You're in the diningroom.  MMM \
 there's freshly cooked ham on a platter for you to enjoy.  You grab a \
@@ -340,24 +358,21 @@ satisfying.")
                 edit_char_attr(**kw)
 
             else:
-                print("Not hungry")
-
                 self.lab.configure(text="You're in the diningroom now and \
 there's a delicious ham set out.  You're not hungry, but maybe in a bit \
 you can have a piece.")
 
 #####################      LIVINGROOM      ##################################
         elif _room == 5:
-            print("LIVING ROOM")
 
             #Check the if the player's tired
             if stats[3] == 0:
 
                 self.lab.configure(text="You're in the livingroom.  It's \
-really nice with great furniture and tall drapes.  Wow the sunshine is really \
-streaming in through that window, too.  Ohh what a nice recliner there is in \
-the corner!  You sit down, play a little Sudoku, and rest for a bit.  \
-Whoa, where did the time go??  You dozed off for a minute!  A bite \
+really nice with great furniture and tall drapes.  Wow the sunshine is \
+really streaming in through that window, too.  Ohh what a nice recliner \
+there is in the corner!  You sit down, play a little Sudoku, and rest for \
+a bit.  Whoa, where did the time go??  You dozed off for a minute!  A bite \
 to eat seems to be in order now.  Where's that diningroom?")
                 kw = {'hungry': 0, 'tired':1}
                 edit_char_attr(**kw)
@@ -367,12 +382,19 @@ to eat seems to be in order now.  Where's that diningroom?")
 really nice with great furniture and tall drapes.  The sunshine is really \
 streaming in through that window.")
 
+        if _room == 0:
+            self.west['text'] = "EXIT"
+        else:
+            self.west['text'] = "West"
+
+
 
 def main():
 
     create_db_table()
     root = ThemedTk(theme='arc')
     root.title('AdventureGame')
+    root.resizable(False,False)
     app = Application(master=root)
     app.mainloop()
 

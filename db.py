@@ -116,7 +116,6 @@ def edit_char_attr(**kwargs):
             cur.execute('''UPDATE character SET strength = (?) WHERE
                 name = (?)''',(new_strength, CRNT_PLYR))
 
-
             conn.commit()
         cur.close()
         conn.close()
