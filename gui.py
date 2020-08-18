@@ -22,7 +22,7 @@ get_current_room, get_char_attr, check_char)
 #        -------
 
 
-prompt1 = "Welcome to the Adventure.  What's your name kind traveler?"
+prompt1 = "Welcome to the Adventure!  What's your name kind traveler?"
 
 class Application(ttk.Frame):
 
@@ -37,11 +37,11 @@ class Application(ttk.Frame):
         y = (mon_h / 2) - (150)
         self.master.geometry("%dx%d+%d+%d" % (465,330,x,y))
 
-        self.master.configure(bg="#21e400")
+        self.master.configure(bg="#51e880")
         #tk and not ttk is used for the availability of extra attributes
         self.lab = tk.Label(self.master, text=prompt1,
 font=("Bodoni MT", 16),justify=tk.CENTER,width=25,
-wraplength=300,bg="darkblue",fg='#ffb732',padx=35,pady=20)
+wraplength=300,bg="#51b8e8",fg='darkblue',padx=35,pady=20,relief='raised')
 
         self.ask_name = ttk.Entry(self.master)
         self.ask_name.focus()
@@ -57,9 +57,8 @@ wraplength=300,bg="darkblue",fg='#ffb732',padx=35,pady=20)
         self.lab.grid(columnspan=3,column=0, row=0,padx=45,pady=40)
         self.ask_name.grid(column=1,row=1)
         self.enter.grid(column=1, row=2,pady=15)
-        self.quit.grid(column=1, row=3,pady=15)
+        self.quit.grid(column=1, row=3)
         print_char()
-
 
 
     #Store the players name
@@ -73,19 +72,18 @@ wraplength=300,bg="darkblue",fg='#ffb732',padx=35,pady=20)
         elif check_char(name):
             self.lab.configure(text="Hello again {char}, it's nice to \
 have you back.  You're now in the entrance hall, the ceiling is \
-still high and there are various plants about the room.  The bathroom is \
+high and there are various plants throughout room.  \nThe bathroom is \
 North and the kitchen is to the East.  Head South to find the living room.  \
-When you'd like to leave, head back West and out the door.  Why \
-not explore some more?".format(char=name.title()),width=35,wraplength=400,
-height=9,padx=35,pady=20)
+When you'd like to leave, head back West and out the door."
+.format(char=name.title()),width=35,wraplength=400,height=9,padx=35,pady=20)
             pass
         #First welcome prompt
         else:
             add_char(name)
-            self.lab.configure(text="Welcome to the main room {char}. \
-It has a high ceiling and some plants.  The bathroom is North and the \
+            self.lab.configure(text="Welcome to the main room {char}, \
+it has a high ceiling and some plants.  The bathroom is North and the \
 kitchen is to the East.  There's a workout room somewhere in here, and if \
-you'd like to leave, head back West and out the door.  Why not explore?"
+you'd like to leave, head back West and out the door."
 .format(char=name.title()),width=35,wraplength=400,
 height=9,padx=20,pady=20)
 
