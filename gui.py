@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedTk
 import tkinter.font as tkfont
+from PIL import Image, ImageTk
 import math
 
 from db import (create_db_table, add_char, print_char, edit_char_attr,
@@ -30,12 +31,22 @@ class Application(ttk.Frame):
 
         super().__init__(master)
         self.master = master
+
+        img = Image.open('hammock.png')
+        self.img = ImageTk.PhotoImage(img)
+        imgx,imgy=self.img.width()+40,self.img.height()+40
         ###     Place the window in the center of the screen     ###
         mon_w = self.master.winfo_screenwidth()
         mon_h = self.master.winfo_screenheight()
         x = (mon_w / 2) - (150)
         y = (mon_h / 2) - (150)
         self.master.geometry("%dx%d+%d+%d" % (465,330,x,y))
+
+        ##Placing final stage window with already retrieved variables
+        ## x and y, then hiding until final strength level is achieved.
+        self.win1 = tk.Toplevel(self.master)
+        self.win1.geometry("%dx%d+%d+%d" % (imgx,imgy,x-190,y-400))
+        self.win1.withdraw()
 
         self.master.configure(bg="#51e880")
         #tk and not ttk is used for the availability of extra attributes
@@ -59,6 +70,7 @@ wraplength=300,bg="#51b8e8",fg='darkblue',padx=35,pady=20,relief='raised')
         self.enter.grid(column=1, row=2,pady=15)
         self.quit.grid(column=1, row=3)
         print_char()
+
 
 
     #Store the players name
@@ -113,27 +125,30 @@ height=9,padx=20,pady=20)
         room = get_current_room()
 
         if room == 0:
+            self.north['state'] = 'disabled'
+            self.west['state'] = 'disabled'
+
             self.room_prompt(1)
 
             kw = {"tired":True, "room":"1"}
             edit_char_attr(**kw)
-            self.north['state'] = 'disabled'
-            self.west['state'] = 'disabled'
 
         elif room == 3:
+            self.north['state'] = 'disabled'
+            self.east['state'] = 'disabled'
+
             self.room_prompt(2)
 
             char_inf = {'room':'2'}
             edit_char_attr(**char_inf)
-            self.north['state'] = 'disabled'
-            self.east['state'] = 'disabled'
 
         elif room == 5:
+            self.west['state'] = 'normal'
+
             self.room_prompt(0)
 
             char_inf = {'room':0}
             edit_char_attr(**char_inf)
-            self.west['state'] = 'normal'
 
         elif room == 4:
             self.room_prompt(3)
@@ -292,17 +307,26 @@ something to help with that")
             ##Hidden suprise accessed at strength 5  Hammock is accessed
             #Strength 5 is reached
             if stats[4] >= 4:
+
+                print("done")
                 self.lab.configure(text="Strength 5 achieved.  You head \
 to the door and tug on it, it opens up.  Wow you're outside and there's a \
-hammock swaying there between some fronds.  You go and lay down and close \
-you're eyes.  Congratulations, you've gained great comfort!  \
-                Game's Over.")
+hammock swinging there between some strong trees.  You go and lay down and close \
+you're eyes.  Congratulations, you've gained great comfort! \n \
+Game's Over.")
+
                 self.north.destroy()
                 self.west.destroy()
                 self.east.destroy()
                 self.south['text'] = "Exit"
                 self.south.configure(command=self.master.destroy)
                 self.south.grid(pady=35)
+                self.win1.deiconify()
+                self.canv = tk.Label(self.win1, image=self.img,relief="solid")
+                self.canv.grid(row=0,column=0,padx=15,pady=15)
+                return
+
+
 
             elif stats[4] >= 2:
                 self.lab.configure(text="You're back in the exercise \
