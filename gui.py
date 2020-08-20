@@ -252,6 +252,7 @@ height=9,padx=20,pady=20)
 
     def room_prompt(self,_room):
         stats = get_char_attr()
+        print_char()
         #Values of stats response by index order are:
         # 0 = name
         # 1 = thirsty (1 is yes, 0 is no)
@@ -282,6 +283,7 @@ room to the east or head back to the main room.",justify=tk.CENTER)
 
 ########################     WORKOUT ROOM     #############################
         elif _room == 2:
+            print(stats[3])
 
             #Check if the player is tired
             if stats[3] == 0:
@@ -306,7 +308,7 @@ something to help with that")
 
             ##Hidden suprise accessed at strength 5  Hammock is accessed
             #Strength 5 is reached
-            if stats[4] >= 4:
+            elif stats[4] >= 4:
 
                 print("done")
                 self.lab.configure(text="Strength 5 achieved.  You head \
